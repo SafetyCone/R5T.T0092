@@ -1,0 +1,3 @@
+R5T.T0092.Construction - Construction project for IIdentified, INamed, and related interface type definitions..
+
+GOALS:
