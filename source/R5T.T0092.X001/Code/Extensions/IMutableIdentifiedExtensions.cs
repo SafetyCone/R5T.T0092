@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 using R5T.T0092;
 
@@ -22,6 +23,14 @@ namespace System
         public static void SetIdentityIfNotSet(this IMutableIdentified mutableIdentified)
         {
             mutableIdentified.SetIdentityIfNotSet(Instances.GuidOperator.NewGuid);
+        }
+
+        public static void SetIdentitiesIfNotSet(this IEnumerable<IMutableIdentified> mutableIdentifieds)
+        {
+            foreach (var mutableIdentified in mutableIdentifieds)
+            {
+                mutableIdentified.SetIdentityIfNotSet();
+            }
         }
 
         public static void SetIdentityIfNotSet(this IMutableIdentified mutableIdentified,

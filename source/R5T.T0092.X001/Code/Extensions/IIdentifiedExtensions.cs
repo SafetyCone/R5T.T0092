@@ -31,6 +31,14 @@ namespace System
                 throw new Exception("Identity is not set.");
             }
         }
+
+        public static void VerifyAllIdentitiesAreSet(this IEnumerable<IIdentified> identifieds)
+        {
+            foreach (var identified in identifieds)
+            {
+                identified.VerifyIsIdentitySet();
+            }
+        }
     }
 }
 
