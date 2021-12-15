@@ -2,6 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
+using R5T.Magyar;
+
 using R5T.T0092;
 
 using Instances = R5T.T0092.X001.Instances;
@@ -32,7 +34,8 @@ namespace System
             }
         }
 
-        public static void VerifyAllIdentitiesAreSet(this IEnumerable<IIdentified> identifieds)
+        public static void VerifyAllIdentitiesAreSet<T>(this IEnumerable<T> identifieds)
+            where T : IIdentified
         {
             foreach (var identified in identifieds)
             {
@@ -47,6 +50,13 @@ namespace System.Linq
 {
     public static class IIdentifiedExtensions
     {
+        public static WasFound<T> FindSingleByIdentity<T>(this IEnumerable<T> items, Guid identity)
+            where T : IIdentified
+        {
+            var output = items.FindSingle(Instances.Predicate.IdentityIs<T>(identity));
+            return output;
+        }
+
         public static IEnumerable<Guid> GetIdentities(this IEnumerable<IIdentified> identifieds)
         {
             var output = identifieds
@@ -62,6 +72,13 @@ namespace System.Linq
             var output = identifieds.ToDictionary(
                 x => x.Identity);
 
+            return output;
+        }
+
+        public static IEnumerable<T> WhereIdentityIs<T>(this IEnumerable<T> identifieds, Guid identity)
+            where T : IIdentified
+        {
+            var output = identifieds.Where(Instances.Predicate.IdentityIs<T>(identity));
             return output;
         }
     }

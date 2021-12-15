@@ -25,7 +25,8 @@ namespace System
             mutableIdentified.SetIdentityIfNotSet(Instances.GuidOperator.NewGuid);
         }
 
-        public static void SetIdentitiesIfNotSet(this IEnumerable<IMutableIdentified> mutableIdentifieds)
+        public static void SetIdentitiesIfNotSet<T>(this IEnumerable<T> mutableIdentifieds)
+            where T : IMutableIdentified
         {
             foreach (var mutableIdentified in mutableIdentifieds)
             {
