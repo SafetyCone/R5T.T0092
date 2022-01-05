@@ -10,5 +10,6 @@ namespace R5T.T0092.X001
     {
         public static IGuidOperator GuidOperator { get; } = T0055.GuidOperator.Instance;
         public static IPredicate Predicate { get; } = T0060.Predicate.Instance;
+        public static ISelector Selector { get; } = T0060.Selector.Instance;
     }
 }

@@ -87,5 +87,12 @@ namespace System.Linq
             var output = items.FindSingle(Instances.Predicate.NameIs<T>(name));
             return output;
         }
+
+        public static Dictionary<string, T[]> ToDictionaryOfArraysByName<T>(this IEnumerable<T> items)
+            where T: INamed
+        {
+            var output = items.ToDictionaryOfArrays(Instances.Selector.SelectName<T>());
+            return output;
+        }
     }
 }
