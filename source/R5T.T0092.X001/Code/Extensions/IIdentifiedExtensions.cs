@@ -33,15 +33,6 @@ namespace System
                 throw new Exception("Identity is not set.");
             }
         }
-
-        public static void VerifyAllIdentitiesAreSet<T>(this IEnumerable<T> identifieds)
-            where T : IIdentified
-        {
-            foreach (var identified in identifieds)
-            {
-                identified.VerifyIsIdentitySet();
-            }
-        }
     }
 }
 
@@ -57,7 +48,8 @@ namespace System.Linq
             return output;
         }
 
-        public static IEnumerable<Guid> GetIdentities(this IEnumerable<IIdentified> identifieds)
+        public static IEnumerable<Guid> GetIdentities<T>(this IEnumerable<T> identifieds)
+            where T : IIdentified
         {
             var output = identifieds
                 .Select(x => x.Identity)
@@ -73,6 +65,21 @@ namespace System.Linq
                 x => x.Identity);
 
             return output;
+        }
+
+        public static void VerifyAllIdentitiesAreSet<T>(this IEnumerable<T> identifieds)
+            where T : IIdentified
+        {
+            foreach (var identified in identifieds)
+            {
+                identified.VerifyIsIdentitySet();
+            }
+        }
+
+        public static void VerifyDistinctByIdentity<T>(this IEnumerable<T> identifieds)
+           where T : IIdentified
+        {
+            identifieds.GetIdentities().VerifyDistinct();
         }
 
         public static IEnumerable<T> WhereIdentityIs<T>(this IEnumerable<T> identifieds, Guid identity)

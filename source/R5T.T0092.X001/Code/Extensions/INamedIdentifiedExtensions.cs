@@ -40,6 +40,13 @@ namespace System.Linq
             var wasFoundByName = namedIdentifieds.FindSingleByName(namedIdentified.Name);
             return wasFoundByName;
         }
+
+        public static void VerifyDistinctNamesAndDistinctIdentities<T>(this IEnumerable<T> namedIdentifieds)
+            where T : INamedIdentified
+        {
+            namedIdentifieds.VerifyDistinctByIdentity();
+            namedIdentifieds.VerifyDistinctNames();
+        }
     }
 }
 

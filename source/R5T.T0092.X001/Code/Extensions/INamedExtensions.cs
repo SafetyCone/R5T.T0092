@@ -13,7 +13,8 @@ namespace System
 {
     public static class INamedExtensions
     {
-        public static IEnumerable<string> GetAllNames(this IEnumerable<INamed> nameds)
+        public static IEnumerable<string> GetAllNames<T>(this IEnumerable<T> nameds)
+            where T : INamed
         {
             var output = nameds
                 .Select(xNamed => xNamed.Name)
@@ -32,11 +33,11 @@ namespace System
             return output;
         }
 
-        public static Dictionary<string, T[]> GetDuplicateNameSets<T>(this IEnumerable<T> extensionMethodBases,
+        public static Dictionary<string, T[]> GetDuplicateNameSets<T>(this IEnumerable<T> nameds,
             Func<string, string> nameTransformer)
             where T : INamed
         {
-            var output = extensionMethodBases
+            var output = nameds
                 .Select(x => (TransformedName: nameTransformer(x.Name), Value: x))
                 .WhereDuplicates(x => x.TransformedName)
                 .ToDictionary(
@@ -74,25 +75,38 @@ namespace System.Linq
 {
     public static class INamedExtensions
     {
-        public static T[] FindArrayByName<T>(this IEnumerable<T> items, string name)
+        public static T[] FindArrayByName<T>(this IEnumerable<T> nameds, string name)
             where T : INamed
         {
-            var output = items.FindArray(Instances.Predicate.NameIs<T>(name));
+            var output = nameds.FindArray(Instances.Predicate.NameIs<T>(name));
             return output;
         }
 
-        public static WasFound<T> FindSingleByName<T>(this IEnumerable<T> items, string name)
+        public static WasFound<T> FindSingleByName<T>(this IEnumerable<T> nameds, string name)
             where T : INamed
         {
-            var output = items.FindSingle(Instances.Predicate.NameIs<T>(name));
+            var output = nameds.FindSingle(Instances.Predicate.NameIs<T>(name));
             return output;
         }
 
-        public static Dictionary<string, T[]> ToDictionaryOfArraysByName<T>(this IEnumerable<T> items)
+        public static Dictionary<string, T> ToDictionaryByName<T>(this IEnumerable<T> nameds)
+            where T : INamed
+        {
+            var output = nameds.ToDictionary(Instances.Selector.SelectName<T>());
+            return output;
+        }
+
+        public static Dictionary<string, T[]> ToDictionaryOfArraysByName<T>(this IEnumerable<T> nameds)
             where T: INamed
         {
-            var output = items.ToDictionaryOfArrays(Instances.Selector.SelectName<T>());
+            var output = nameds.ToDictionaryOfArrays(Instances.Selector.SelectName<T>());
             return output;
+        }
+
+        public static void VerifyDistinctNames<T>(this IEnumerable<T> nameds)
+            where T: INamed
+        {
+            nameds.GetAllNames().VerifyDistinct();
         }
     }
 }
