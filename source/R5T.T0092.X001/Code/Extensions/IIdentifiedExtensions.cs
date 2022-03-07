@@ -41,6 +41,30 @@ namespace System.Linq
 {
     public static class IIdentifiedExtensions
     {
+        public static Dictionary<Guid, WasFound<T>> FindDictionaryByIdentity<T>(this IEnumerable<T> items,
+            IEnumerable<Guid> localIdentities)
+            where T : IIdentified
+        {
+            var identitiesHash = new HashSet<Guid>(localIdentities);
+
+            var foundItems = items
+                .Where(x => identitiesHash.Contains(x.Identity))
+                .Now();
+
+            var notFoundIdentities = identitiesHash.Except(foundItems
+                .Select(x => x.Identity));
+
+            var output = foundItems
+                .Select(x => (x.Identity, WasFound.Found(x)))
+                .Concat(notFoundIdentities
+                    .Select(x => (x, WasFound.NotFound<T>())))
+                .ToDictionary(
+                    x => x.Item1,
+                    x => x.Item2);
+
+            return output;
+        }
+
         public static WasFound<T> FindSingleByIdentity<T>(this IEnumerable<T> items, Guid identity)
             where T : IIdentified
         {
