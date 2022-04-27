@@ -47,6 +47,18 @@ namespace System
             return output;
         }
 
+        public static Dictionary<string, T[]> GetDuplicateNameSets<T>(this IEnumerable<T> nameds)
+            where T : INamed
+        {
+            var output = nameds
+                .WhereDuplicates(x => x.Name)
+                .ToDictionary(
+                    x => x.Key,
+                    x => x.ToArray());
+
+            return output;
+        }
+
         public static IEnumerable<string> GetDuplicateNamesInAlphabeticalOrder(this IEnumerable<INamed> nameds)
         {
             var output = nameds.GetAllNames()
@@ -103,10 +115,19 @@ namespace System.Linq
             return output;
         }
 
+        public static void VerifyDistinctByName<T>(this IEnumerable<T> nameds)
+            where T : INamed
+        {
+            nameds.GetAllNames().VerifyDistinct();
+        }
+
+        /// <summary>
+        /// Quality-of-life overload for <see cref="VerifyDistinctByName{T}(IEnumerable{T})"/>.
+        /// </summary>
         public static void VerifyDistinctNames<T>(this IEnumerable<T> nameds)
             where T: INamed
         {
-            nameds.GetAllNames().VerifyDistinct();
+            nameds.VerifyDistinctByName();
         }
     }
 }
